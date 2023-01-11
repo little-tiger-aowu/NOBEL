@@ -66,14 +66,13 @@ const playClick = () =>{
 <style lang="less" scoped>
   .loginBox{
     height: 100vh;
-
-    background: url('@/assets/images/loginBgimg.png') no-repeat fixed;
+    background: url('../assets/images/loginBgimg.png') no-repeat fixed;
     background-size: 100% 100%;
     display: flex;
     justify-content: center;
     img{
       position: absolute;
-      bottom: 2rem;
+      bottom: 1.4rem;
       margin: 0 auto;
       width: 5rem;
     }

@@ -8,10 +8,10 @@
             multiple
             :after-read="afterRead">
         </van-uploader>
-        <van-field v-model="city" placeholder="所在城市" />
+        <van-field style="background-color: #fddbde" v-model="city" placeholder="所在城市" />
         <van-field v-model="clinicName" placeholder="诊所名称" />
         <div class="row">
-          <van-field label-width="30" v-model="userName" placeholder="医生名称" />
+          <van-field label-width="30" style="background-color: #fddbde" v-model="userName" placeholder="医生名称" />
           <van-dropdown-menu>
             <van-dropdown-item v-model="recommendation" :options="option1" />
           </van-dropdown-menu>
@@ -90,12 +90,12 @@ const afterRead = (file:any) => {
 
 // 表单
 const option1 = [
-  { text: '自荐', value: '自荐' },
-  { text: '推荐', value: '推荐' },
+  { text: '我的故事', value: '我的故事' },
+  { text: '他的故事', value: '他的故事' },
 ];
 const city = ref('')
 const clinicName = ref('')
-const recommendation = ref('自荐')
+const recommendation = ref('我的故事')
 const userName = ref('')
 const textarea = ref('')
 const fromData = {
@@ -117,9 +117,9 @@ const sumbitFrom = () => {
     fromData.content = textarea.value
     fromData.imgUrl = files.value
     fromData.title = userName.value
-    console.log(fromData)
     userFrom(JSON.stringify(fromData)).then((res:any) =>{
       if (res.code === 200) {
+        cookies.setCookie('fromData',JSON.stringify(fromData))
         Dialog.confirm({
           message: '提交成功',
           confirmButtonText:"查看更多",
@@ -154,30 +154,32 @@ const sumbitFrom = () => {
 
 <style scoped lang="less">
   .content {
-    height: 100vh;
     overflow: auto;
     background: url("../assets/images/uploadBgimg.png") no-repeat;
     background-size: 100% 100%;
 
     .uploadBox{
-      background: url("../assets/images/uploadBgimg.png") no-repeat;
-      background-size: 100% auto;
+      //background: url("../assets/images/uploadBgimg.png") no-repeat;
+      //background-size: 100% auto;
       display: flex;
       flex-direction: column;
       // justify-content: center;
       // align-items: center;
+      //border: 1px solid #000000;
+      //height: 80%;
       text-align: center;
       padding: 0 20px;
-
       .uploadImg{
         // width: 70%;
         display: flex;
         flex-direction: column;
-        margin-top: 80px;
+        margin-top: 25%;
         background: url('../assets/images/uploadBgimg3.png') no-repeat;
         background-size: 100% 100%;
-        padding: 100px 40px 30px;
-
+        padding: 60px 40px 30px;
+        :deep(.van-uploader__preview){
+          margin: 0;
+        }
         .uploadImgBtn{
           display: flex;
           justify-content: center;
@@ -213,12 +215,13 @@ const sumbitFrom = () => {
           box-shadow: unset;
         }
         :deep(.van-dropdown-menu__title){
-          width: 70%;
+          width: 78%;
+          margin-right: 0.2rem;
         }
         :deep(.van-dropdown-menu__title:after){
           color: red;
           opacity: 1;
-          border-color: #911e1e00 #6c5c5c00 #000000 #000000;
+          border-color: #911e1e00 #6c5c5c00 #f50000 #f50000;
         }
       }
     }
@@ -257,10 +260,11 @@ const sumbitFrom = () => {
     }
   }
   :deep(.van-dropdown-item){
-    width: 130px;
+    width: 4rem;
     height: 112px;
-    right: 61px;
+    right: 58px;
     left: unset;
+    top: 448.475px !important;
     .van-overlay{
       background-color: transparent;
     }

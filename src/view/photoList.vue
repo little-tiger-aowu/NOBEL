@@ -25,17 +25,22 @@
                  <div v-if="!item.isLike" style="display: flex;align-items: center">
                    <van-icon @click="clickLike(item)" size="22" name="like-o" />
                    {{ item.countPage }}
+                   {{ item.totalCount }}
                  </div>
                  <div v-else style="display: flex;align-items: center">
                    <van-icon @click="clickLike(item)" color="red" size="22" v-show="!like" name="like" />
                    {{ item.countPage }}
+                   {{ item.totalCount }}
                  </div>
                </div>
              </div>
            </div>
          </div>
+       <div class="bottomTab">
+         <img @click="generatePoster" src="../assets/images/postersBtn.png">
+         <img @click="player" src="../assets/images/playerBtn.png">
+       </div>
      </van-list>
-<!--     <div class="bottomText">&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; 没有更多了 &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</div>-->
    </div>
  </div>
 </template>
@@ -45,6 +50,8 @@ import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { getAllList,cliLike } from "../api/path";
 import { useCookie } from "vue-cookie-next";
+import { Toast } from 'vant';
+import 'vant/es/toast/style';
 const cookies = useCookie()
 const router = useRouter();
 
@@ -56,13 +63,11 @@ const loading = ref(false);
 const finished = ref(false);
 const onLoad = () => {
   loading.value = true;
-  console.log('加载')
   setTimeout(() => {
     data1.pageSize += 4
     getAllList(data1).then((res:any) =>{
       const size = res.data.totalCount
       photoList.value = res.data.pagedList
-      console.log(photoList)
     })
     loading.value = false;
 
@@ -85,10 +90,8 @@ const getPhotoList = () => {
     photoList.value = res.data.pagedList
     size.value = res.data.totalCount
     if (size.value === 0 || size.value <= data1.pageSize) {
-      console.log(333)
       finished.value = true
     }
-    console.log(photoList)
   })
 }
 getPhotoList()
@@ -106,6 +109,25 @@ const clickLike = (item:any) => {
   })
 }
 
+// 生成海报
+const generatePoster = () => {
+  console.log(cookies.getCookie('openId'))
+  if (!cookies.getCookie('openId')) {
+    Toast.fail('请先参与活动再分享吧！')
+  } else {
+    router.push({
+      path:'/posters'
+    })
+  }
+}
+
+// 参与活动
+const player = () => {
+  router.replace({
+    path:'/'
+  })
+}
+
 </script>
 
 <style scoped lang="less">
@@ -117,8 +139,8 @@ const clickLike = (item:any) => {
     width: 100%;
     position: absolute;
     overflow: scroll;
-    bottom: 6.5%;
-    height: 44vh;
+    bottom: 1%;
+    height: 52vh;
     .van-list{
       //display: flex;
       ////flex-direction: column;
@@ -178,11 +200,24 @@ const clickLike = (item:any) => {
   }
 }
 :deep(.van-list__finished-text){
+  position: absolute;
+  right: 40%;
 }
 .bottomText{
   display: flex;
   justify-content: center;
   color: #999999;
   font-size: 0.3rem;
+}
+.bottomTab{
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  position: fixed;
+  bottom: 0.4rem;
+  left: 0;
+  img{
+    width: 40%;
+  }
 }
 </style>
