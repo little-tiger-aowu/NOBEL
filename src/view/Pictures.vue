@@ -15,10 +15,6 @@
           <van-dropdown-menu>
             <van-dropdown-item v-model="recommendation" :options="option1" />
           </van-dropdown-menu>
-  <!--         <select v-model="recommendation">-->
-  <!--           <option value ="volvo">Volvo</option>-->
-  <!--           <option value ="saab">Saab</option>-->
-  <!--         </select>-->
         </div>
           <van-field
               v-model="textarea"
@@ -32,10 +28,20 @@
       </div>
       <img @click="sumbitFrom" class="submitbtn" src="../assets/images/submit.png">
     </div>
-    <!-- 弹出层 -->
+    <!-- 进入页面弹出层 -->
     <div v-show="ismaskBox === 'true'" class="maskBox">
       <img width="300" src="../assets/images/tip.png">
       <img  @click="closeBtn" width="50" src="../assets/images/close.png">
+    </div>
+    <!-- 提交成功弹出层 -->
+    <div v-show="isSumbitMaskBox === true" class="maskBox1">
+      <div class="popCente">
+        <img width="300" style="border-radius: 15px 15px 0 0" src="../assets/images/popup1.jpg">
+      </div>
+      <div class="tbnBox" style="margin-top: -10px;border-top: 1px solid #ffffff">
+        <img width="150" @click="again" style="border-radius: 0 0 0 15px;border-right: 1px solid #ffffff" src="../assets/images/poppuBtn1.png">
+        <img width="150" @click="moreBtn" style="border-radius: 0 0 15px 0" src="../assets/images/poppuBtn2.png">
+      </div>
     </div>
   </div>
 </template>
@@ -69,6 +75,8 @@ const closeBtn = () => {
 const fileList = ref<any>([])
 const files = ref<any>()
 const afterRead = (file:any) => {
+  console.log(file)
+  debugger
   // 此时可以自行将文件上传至服务器
   getToken().then((res:any) => {
     if (res.code == 200) {
@@ -79,6 +87,7 @@ const afterRead = (file:any) => {
       data.append("name", file.file.name);
       data.append("key", Date.now() + "-" + file.file.name);
       // 上传七牛云
+      console.log(data.get('file'))
       uploadQiNiu(data).then((putres:any) => {
         files.value = "https://ssl.resource.synconize.com/" + putres.key;
       });
@@ -108,6 +117,10 @@ const fromData = {
   title:''
 }
 
+// 提交成功提示
+const isSumbitMaskBox = ref(false)
+
+
 // 提交
 const sumbitFrom = () => {
   if (files.value) {
@@ -119,27 +132,8 @@ const sumbitFrom = () => {
     fromData.title = userName.value
     userFrom(JSON.stringify(fromData)).then((res:any) =>{
       if (res.code === 200) {
+        isSumbitMaskBox.value = true
         cookies.setCookie('fromData',JSON.stringify(fromData))
-        Dialog.confirm({
-          message: '提交成功',
-          confirmButtonText:"查看更多",
-          cancelButtonText:"再传一张"
-        })
-            .then(() => {
-              router.push({
-                path:'/photoList'
-              })
-            })
-            .catch(() => {
-              textarea.value = ''
-              files.value = ''
-              city.value = ''
-              clinicName.value = ''
-              recommendation.value = ''
-              files.value = ''
-              userName.value = ''
-            });
-        Toast.success('提交成功')
       }
     })
   } else {
@@ -147,7 +141,24 @@ const sumbitFrom = () => {
   }
 
 }
-
+// 发现更多
+const moreBtn = () => {
+  router.push({
+    path:'/photoList'
+  })
+}
+// 再次发现
+const again = () => {
+  isSumbitMaskBox.value = false
+  fileList.value = []
+  textarea.value = ''
+  files.value = ''
+  city.value = ''
+  clinicName.value = ''
+  recommendation.value = '我的故事'
+  files.value = ''
+  userName.value = ''
+}
 
 
 </script>
@@ -225,6 +236,37 @@ const sumbitFrom = () => {
         }
       }
     }
+    .maskBox1{
+      position: absolute;
+      top: 0;
+      background-color: rgba(47, 44, 44, 0.7);
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      .imgBox{
+        position: absolute;
+        background-image: url("../assets/images/popup.png");
+        background-repeat: no-repeat;
+        background-size: 100% auto;
+        width: 80%;
+        height: 30.5%;
+        display: flex;
+        .Btn1{
+          position: absolute;
+          left: 10px;
+          bottom: 0;
+        }
+        .Btn{
+          position: absolute;
+          right: 10px;
+          bottom: 0;
+        }
+      }
+    }
     .maskBox{
       position: absolute;
       top: 0;
@@ -268,5 +310,17 @@ const sumbitFrom = () => {
     .van-overlay{
       background-color: transparent;
     }
+  }
+  .maskBox1{
+    position: absolute;
+    top: 0;
+    background-color: rgba(47, 44, 44, 0.7);
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 </style>

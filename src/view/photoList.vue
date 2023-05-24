@@ -25,12 +25,10 @@
                  <div v-if="!item.isLike" style="display: flex;align-items: center">
                    <van-icon @click="clickLike(item)" size="22" name="like-o" />
                    {{ item.countPage }}
-                   {{ item.totalCount }}
                  </div>
                  <div v-else style="display: flex;align-items: center">
                    <van-icon @click="clickLike(item)" color="red" size="22" v-show="!like" name="like" />
                    {{ item.countPage }}
-                   {{ item.totalCount }}
                  </div>
                </div>
              </div>

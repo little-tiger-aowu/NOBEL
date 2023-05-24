@@ -13,10 +13,11 @@ import 'vant/es/toast/style';
 const router = useRouter()
 const cookies = useCookie()
 // 获取授权信息
+console.log(router.currentRoute.value.query)
 const userInfo = reactive<any>({
-  openId:router.currentRoute.value.query.openid?.slice(-1)[0] || '',
+  openId:router.currentRoute.value.query.openid || '',
+
   wxHeadPortrait:router.currentRoute.value.query.headimgurl || '',
-  // wxNickname:router.currentRoute.value.query.nickname || ''
 })
 
 console.log(userInfo)
@@ -30,22 +31,21 @@ function getOpenId() {
   if (userInfo.openId) {
     cookies.setCookie("openId", userInfo.openId);
     cookies.setCookie("avatar", userInfo.wxHeadPortrait);
-    // cookies.setCookie("nickName", userInfo.wxNickname);
     login()
   } else {
-    let url = encodeURIComponent("http://craftsman_h5.cdn-static.synconize.com/"); //http://106.14.218.186:7798  http://craftsman_h5.cdn-static.synconize.com
+    let url = encodeURIComponent("http://craftsman_h5.cdn-static.synconize.com"); //http://106.14.218.186:7798  http://craftsman_h5.cdn-static.synconize.com
     window.location.href =
         `https://app.jingsocial.com/api/oauth/authorize?appid=wx923804b1d49f51fb&scope=snsapi_userinfo&redirect_uri=${url}`;
   }
 }
 
-const isLogin  = ref<boolean>(false)
+const isLogin  = ref<boolean>(true)
 
 // 登录
 const login = () => {
   userLogin(JSON.stringify(userInfo)).then((res:any) =>{
-    isLogin.value = true
     if (res.code === 200){
+      isLogin.value = true
       Toast.success('登录成功')
     }
   })
@@ -53,10 +53,10 @@ const login = () => {
 
 // 参与活动
 const playClick = () =>{
-  router.replace({path:'/pictures'})
+    // router.replace({path:'/pictures'})
   if (isLogin.value) {
     router.replace({path:'/pictures'})
-  }else {
+  } else {
     Toast.fail('未登录')
   }
 }

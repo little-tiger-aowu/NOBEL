@@ -4,6 +4,7 @@
    <div v-if="!isMakePoster" class="posterTemplate" ref="posterTemplate">
      <div  class="userImg">
        <img  style="width: 100%;height: 100%" :src=fromData.imgUrl class="posterBg" />
+<!--       <img  style="width: 100%;height: 100%" :src=userImg class="posterBg" />-->
      </div>
      <div>
        <div class="userInfo">
@@ -16,13 +17,13 @@
    <div v-else class="posterImg" style="width: 100%;height: 100vh">
       <img style="width: 100%;height: 100%" :src="posterUrl">
      <div class="bottomTip">
-       <span>长按保存海报到手机</span>
+      <img style="width: 100%" src="../assets/images/bottomTip.png">
      </div>
    </div>
  </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import html2canvas from "html2canvas";
@@ -39,7 +40,7 @@ const fromData = cookies.getCookie('fromData')
 // 生成海报
 const isMakePoster = ref(false)
 const userImg = ref('https://ssl.resource.synconize.com/1667536527423-36D71A48-15CE-4445-948F-3EF6E8CF86B4.jpeg')
-const posterTemplate = ref('');
+const posterTemplate = ref<any>('');
 const posterUrl = ref('')
 const makePoster = () => {
   Toast({
@@ -51,9 +52,8 @@ const makePoster = () => {
     html2canvas(posterTemplate.value, {
       backgroundColor: null,
       useCORS: true, // 开启跨越配置
-      scale: 4,
-      dpi: 400,
-    }).then(canvas => {
+      scale: 4
+    }).then((canvas:any)  => {
       // Snackbar.clear(); // 清除上传动画
       posterUrl.value = canvas.toDataURL("image/*");
       isMakePoster.value = true
@@ -62,8 +62,8 @@ const makePoster = () => {
         type:'success',
         duration:1000
       });
-    }, 100);
-  });
+    });
+  }, 100);
 }
 
 setTimeout(() =>{
@@ -98,10 +98,12 @@ setTimeout(() =>{
       transform: rotate(10deg);
       left: 5%;
       .userName{
+        //position: relative; top:-150px;LEFT: 150px;
+        color: transparent;
+        -webkit-text-stroke: 1px rgba(23, 22, 22, 0.7);
         font-size: 0.7rem;
-        letter-spacing: 2px;
-        color: white;
-        -webkit-text-stroke: 1px #000000;
+        font-weight: bold;
+        letter-spacing: 0.02em;
       }
       .hospitalName{
         font-size: 0.4rem;
@@ -119,13 +121,13 @@ setTimeout(() =>{
 .bottomTip{
   position: fixed;
   bottom: 0;
-  height: 25px;
+  height: 28px;
   font-size: 0.35rem;
   font-weight: bolder;
   width: 100%;
-  background-color: #f50000;
-  text-align: center;
-  color: white;
-  opacity: 0.8;
+  //background-color: #f50000;
+  //text-align: center;
+  //color: white;
+  //opacity: 0.8;
 }
 </style>
