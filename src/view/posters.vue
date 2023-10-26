@@ -3,13 +3,15 @@
    <!-- 生成海报 -->
    <div v-if="!isMakePoster" class="posterTemplate" ref="posterTemplate">
      <div  class="userImg">
-       <img  style="width: 100%;height: 100%" :src=fromData.imgUrl class="posterBg" />
+<!--       <img  style="width: 100%;height: 100%" :src=fromData.imgUrl class="posterBg" />-->
 <!--       <img  style="width: 100%;height: 100%" :src=userImg class="posterBg" />-->
      </div>
      <div>
        <div class="userInfo">
           <div class="userName">{{ fromData.title }}</div>
          <div class="hospitalName">{{ fromData.clinic}}</div>
+       </div>
+       <div class="content">
          <div class="introduce">{{ fromData.content }}</div>
        </div>
      </div>
@@ -37,10 +39,16 @@ const cookies = useCookie()
 
 const fromData = cookies.getCookie('fromData')
 
+
+
+
+
+
+
 // 生成海报
 const isMakePoster = ref(false)
 const userImg = ref('https://ssl.resource.synconize.com/1667536527423-36D71A48-15CE-4445-948F-3EF6E8CF86B4.jpeg')
-const posterTemplate = ref<any>('');
+const posterTemplate = ref<any>('dsadasdsadasdsadas');
 const posterUrl = ref('')
 const makePoster = () => {
   Toast({
@@ -94,9 +102,9 @@ setTimeout(() =>{
       width: 69%;
       height: 20%;
       position: absolute;
-      top:68%;
-      transform: rotate(10deg);
-      left: 5%;
+      top:43%;
+      transform: rotate(13deg);
+      left: 15%;
       .userName{
         //position: relative; top:-150px;LEFT: 150px;
         color: transparent;
@@ -110,10 +118,20 @@ setTimeout(() =>{
         font-weight: bolder;
         margin: 5px 0;
       }
+
+
+    }
+    .content{
+      transform: rotate(13deg);
+      position: absolute;
+      top: 53%;
+      left: 10%;
+      line-height: 30px;
+      height: 25%;
+      width: 74%;
       .introduce{
         font-size: 0.35rem;
       }
-
     }
 
   }

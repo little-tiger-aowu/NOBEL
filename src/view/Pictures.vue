@@ -1,27 +1,20 @@
 <template>
   <div class="content">
     <div class="uploadBox" :style="{height:bgHeight}">
-        <!-- 上传照片 -->
       <div class="uploadImg">
-        <van-uploader
-            v-model="fileList"
-            multiple
-            :after-read="afterRead">
-        </van-uploader>
         <van-field style="background-color: #fddbde" v-model="city" placeholder="所在城市" />
         <van-field v-model="clinicName" placeholder="诊所名称" />
         <div class="row">
-          <van-field label-width="30" style="background-color: #fddbde" v-model="userName" placeholder="医生名称" />
+          <van-field label-width="30" style="background-color: #fddbde" v-model="userName" placeholder="医生姓名" />
           <van-dropdown-menu>
             <van-dropdown-item v-model="recommendation" :options="option1" />
           </van-dropdown-menu>
         </div>
           <van-field
               v-model="textarea"
-              rows="3"
+              rows="10"
               autosize
               type="textarea"
-              maxlength="20"
               placeholder="请填写您/TA的故事"
               show-word-limit
           />
@@ -39,8 +32,8 @@
         <img width="300" style="border-radius: 15px 15px 0 0" src="../assets/images/popup1.jpg">
       </div>
       <div class="tbnBox" style="margin-top: -10px;border-top: 1px solid #ffffff">
-        <img width="150" @click="again" style="border-radius: 0 0 0 15px;border-right: 1px solid #ffffff" src="../assets/images/poppuBtn1.png">
-        <img width="150" @click="moreBtn" style="border-radius: 0 0 15px 0" src="../assets/images/poppuBtn2.png">
+        <img width="150" @click="again" style="border-radius: 0 0 0 15px" src="../assets/images/poppuBtn4.png">
+        <img width="150" @click="moreBtn" style="border-radius: 0 0 15px 0" src="../assets/images/poppuBtn3.png">
       </div>
     </div>
   </div>
@@ -71,36 +64,10 @@ const closeBtn = () => {
 }
 
 
-// 照片上传
-const fileList = ref<any>([])
-const files = ref<any>()
-const afterRead = (file:any) => {
-  console.log(file)
-  debugger
-  // 此时可以自行将文件上传至服务器
-  getToken().then((res:any) => {
-    if (res.code == 200) {
-      let data = new FormData();
-      data.append("token", res.data.token);
-      data.append("file", file.file);
-      // data.append("name", new Date() + file.file.nmae);
-      data.append("name", file.file.name);
-      data.append("key", Date.now() + "-" + file.file.name);
-      // 上传七牛云
-      console.log(data.get('file'))
-      uploadQiNiu(data).then((putres:any) => {
-        files.value = "https://ssl.resource.synconize.com/" + putres.key;
-      });
-    } else {
-      console.log("获取不到Token");
-    }
-  });
-};
-
 // 表单
 const option1 = [
   { text: '我的故事', value: '我的故事' },
-  { text: '他的故事', value: '他的故事' },
+  { text: '他/她的故事', value: '他/她的故事' },
 ];
 const city = ref('')
 const clinicName = ref('')
@@ -113,6 +80,7 @@ const fromData = {
   recommendation:'',
   content:'',
   imgUrl:'',
+  fromData: '',
   openId:cookies.getCookie('openId'),
   title:''
 }
@@ -123,13 +91,12 @@ const isSumbitMaskBox = ref(false)
 
 // 提交
 const sumbitFrom = () => {
-  if (files.value) {
-    fromData.city = city.value
-    fromData.clinic = clinicName.value
-    fromData.recommendation = recommendation.value
-    fromData.content = textarea.value
-    fromData.imgUrl = files.value
-    fromData.title = userName.value
+  if (city.value &&  clinicName.value && userName.value && textarea.value) {
+    fromData.city = city.value // 城市
+    fromData.clinic = clinicName.value //诊所名称
+    fromData.recommendation = recommendation.value // 我的故事/Ta的故事
+    fromData.content = textarea.value // 内容
+    fromData.title = userName.value  // 名字
     userFrom(JSON.stringify(fromData)).then((res:any) =>{
       if (res.code === 200) {
         isSumbitMaskBox.value = true
@@ -137,8 +104,9 @@ const sumbitFrom = () => {
       }
     })
   } else {
-    Toast.fail('请先上传图片')
+    Toast.fail('请完整填写表单')
   }
+
 
 }
 // 发现更多
@@ -150,13 +118,10 @@ const moreBtn = () => {
 // 再次发现
 const again = () => {
   isSumbitMaskBox.value = false
-  fileList.value = []
   textarea.value = ''
-  files.value = ''
   city.value = ''
   clinicName.value = ''
   recommendation.value = '我的故事'
-  files.value = ''
   userName.value = ''
 }
 
@@ -166,7 +131,7 @@ const again = () => {
 <style scoped lang="less">
   .content {
     overflow: auto;
-    background: url("../assets/images/uploadBgimg.png") no-repeat;
+    background: url("../assets/images/uploadBgimg1.png") no-repeat;
     background-size: 100% 100%;
 
     .uploadBox{
@@ -184,7 +149,7 @@ const again = () => {
         // width: 70%;
         display: flex;
         flex-direction: column;
-        margin-top: 25%;
+        margin-top: 40%;
         background: url('../assets/images/uploadBgimg3.png') no-repeat;
         background-size: 100% 100%;
         padding: 60px 40px 30px;
@@ -301,12 +266,18 @@ const again = () => {
       }
     }
   }
+  :deep(.van-cell__title){
+    flex: 2;
+  }
+  :deep(.van-cell__value){
+    flex: 1;
+  }
   :deep(.van-dropdown-item){
     width: 4rem;
     height: 112px;
     right: 58px;
     left: unset;
-    top: 448.475px !important;
+    top: 330px !important;
     .van-overlay{
       background-color: transparent;
     }

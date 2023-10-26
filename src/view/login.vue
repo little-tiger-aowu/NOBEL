@@ -16,11 +16,11 @@ const cookies = useCookie()
 console.log(router.currentRoute.value.query)
 const userInfo = reactive<any>({
   openId:router.currentRoute.value.query.openid || '',
-
+  wxNickname: router.currentRoute.value.query.nickname || '',
   wxHeadPortrait:router.currentRoute.value.query.headimgurl || '',
 })
 
-console.log(userInfo)
+
 
 onMounted(()=>{
   getOpenId()
@@ -30,6 +30,7 @@ onMounted(()=>{
 function getOpenId() {
   if (userInfo.openId) {
     cookies.setCookie("openId", userInfo.openId);
+    cookies.setCookie("wxNickname",userInfo.wxNickname)
     cookies.setCookie("avatar", userInfo.wxHeadPortrait);
     login()
   } else {
@@ -66,7 +67,7 @@ const playClick = () =>{
 <style lang="less" scoped>
   .loginBox{
     height: 100vh;
-    background: url('../assets/images/loginBgimg.png') no-repeat fixed;
+    background: url('../assets/images/loginBgimg1.png') no-repeat fixed;
     background-size: 100% 100%;
     display: flex;
     justify-content: center;
